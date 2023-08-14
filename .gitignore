@@ -166,3 +166,6 @@ data/
 .vscode/
 .DS_Store
 poetry.lock
+
+wandb/
+```
