@@ -162,3 +162,7 @@ cython_debug/
 
 trained_models/
 data/
+
+.vscode/
+.DS_Store
+poetry.lock
