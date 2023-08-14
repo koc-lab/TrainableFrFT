@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "frft-demo"
+version = "0.1.0"
+description = ""
+authors = ["Arda Can Aras <ardaaras99@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "frft_demo" }]
+
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.12"
+wandb = "^0.15.7"
+ipykernel = "^6.25.0"
+matplotlib = "^3.7.2"
+numpy = "^1.25.1"
+pandas = "^2.0.3"
+scikit-learn = "^1.3.0"
+tqdm = "^4.65.0"
+torch = "2.0.0"
+torchvision = "0.15.1"
+torch-frft = {git = "https://github.com/tunakasif/torch-frft.git"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

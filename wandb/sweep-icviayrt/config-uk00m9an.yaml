@@ -1,0 +1,16 @@
+wandb_version: 1
+
+batch_size:
+  value: 144
+classes:
+  value: 10
+dataset:
+  value: CIFAR-10
+device:
+  value: cpu
+epochs:
+  value: 5
+learning_rate:
+  value: 0.3939464811776652
+model_name:
+  value: VGG_11
