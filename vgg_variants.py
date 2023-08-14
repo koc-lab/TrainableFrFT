@@ -66,7 +66,7 @@ VGG_LAYER_DICT = {
 # VGG_16_DFRFT = change_pooling(VGG_16, to=PoolType.DFrFTPool)
 # VGG_19_DFRFT = change_pooling(VGG_19, to=PoolType.DFrFTPool)
 
-
+# asdasd
 # VGG_LAYER_DICT = {
 #     "VGG_11": VGG_11,
 #     "VGG_13": VGG_13,
