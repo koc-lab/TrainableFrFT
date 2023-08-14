@@ -79,7 +79,7 @@ VGG_LAYER_DICT = {
 #     "VGG_11_FRFT": VGG_11_FRFT,
 #     "VGG_13_FRFT": VGG_13_FRFT,
 #     "VGG_16_FRFT": VGG_16_FRFT,
-#     "VGG_19_FRFT": VGG_19_FRFT,
+#     "VGG_19_FRFT": VGG_19_FRFT,git
 #     "VGG_11_DFRFT": VGG_11_DFRFT,
 #     "VGG_13_DFRFT": VGG_13_DFRFT,
 #     "VGG_16_DFRFT": VGG_16_DFRFT,
@@ -87,6 +87,6 @@ VGG_LAYER_DICT = {
 # }
 
 
-dump_model_variants_dict(model_name="VGG", model_variants_dict=VGG_LAYER_DICT)
+dump_model_variants_dict(model_name="vgg", model_variants_dict=VGG_LAYER_DICT)
 
 # %%
