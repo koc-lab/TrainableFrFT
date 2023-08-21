@@ -1,0 +1,44 @@
+method: grid
+project: frft-demo
+metric:
+  name: test/test_accuracy
+  goal: maximize
+# Check the hyperband algorithms to understand better
+# early_terminate:
+#   type: hyperband
+#   s: 2
+#   eta: 3
+#   max_iter: 81
+
+parameters:
+  patience:
+    value: 10
+  max_epochs:
+    value: 100
+  model_name:
+    distribution: categorical
+    values: ["VGG_16","VGG_16_FRFT","VGG_16_DFRFT","VGG_16_FFT"]
+  gpu_id:
+    value: 1
+  n_class:
+    value: 10
+  dataset_name:
+    value: CIFAR-10
+  # Data Handler CONFIG
+  multi_gpu:
+    value: False
+  batch_size:
+    value: 128
+  train_slice:
+    value: 1000
+  test_slice:
+    value: 100
+  # Optimizer CONFIG
+  lr:
+    value: 0.1
+  wd:
+    value: 0.0005
+  momentum:
+    value: 0.9
+
+  

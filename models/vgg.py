@@ -5,22 +5,19 @@ from models.custom_frft_layers import FrFTPool, DFrFTPool, FFTPool
 from typing import Union
 
 from configurations.configs import PoolType
-from configurations.configs import VGGConfig
 from utils.utils import get_model_variants_dict
 
 VGG_LAYER_DICT = get_model_variants_dict("vgg")
 
 
 class VGG(nn.Module):
-    def __init__(
-        self,
-        config: VGGConfig,
-    ):
+    def __init__(self, model_name: str, n_class):
         super(VGG, self).__init__()
+        self.model_name = model_name
+        self.n_class = n_class
 
-        self.vgg_block = VGGBlock(VGG_LAYER_DICT[config.model_name])
-        self.classifier = nn.Linear(512, config.n_class)
-        self.config = config
+        self.vgg_block = VGGBlock(VGG_LAYER_DICT[model_name])
+        self.classifier = nn.Linear(512, n_class)
 
     def forward(self, x):
         out = self.vgg_block(x)
@@ -36,8 +33,15 @@ class VGG(nn.Module):
         for layer in self.vgg_block.layers:
             if isinstance(layer, FrFTPool) or isinstance(layer, DFrFTPool):
                 order_1, order_2 = layer.order1.item(), layer.order2.item()
-                d[f"pool_{pool_count}"] = (order_1, order_2)
-                pool_count += 1
+
+                # TODO: add modulo with tuna
+                if isinstance(layer, FrFTPool):
+                    d[f"pool_{pool_count}"] = (order_1 % 4, order_2 % 4)
+                elif isinstance(layer, DFrFTPool):
+                    d[f"pool_{pool_count}"] = (order_1 % 4, order_2 % 4)
+
+            pool_count += 1
+
         return d
 
 
@@ -104,14 +108,6 @@ class ConvBlock(nn.Module):
 
     def forward(self, x):
         return self.relu(self.bn(self.conv(x)))
-
-
-def main():
-    pass
-
-
-if __name__ == "__main__":
-    main()
 
 
 # test()
