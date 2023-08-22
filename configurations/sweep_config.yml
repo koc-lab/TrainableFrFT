@@ -3,23 +3,16 @@ project: frft-demo
 metric:
   name: test/test_accuracy
   goal: maximize
-# Check the hyperband algorithms to understand better
-# early_terminate:
-#   type: hyperband
-#   s: 2
-#   eta: 3
-#   max_iter: 81
-
 parameters:
   patience:
-    value: 10
+    value: 20
   max_epochs:
     value: 100
+  gpu_id:
+    value: 1
   model_name:
     distribution: categorical
     values: ["VGG_16","VGG_16_FRFT","VGG_16_DFRFT","VGG_16_FFT"]
-  gpu_id:
-    value: 1
   n_class:
     value: 10
   dataset_name:
@@ -40,5 +33,8 @@ parameters:
     value: 0.0005
   momentum:
     value: 0.9
+  early_stop_verbose:
+    value: True
 
+# TODO: You can also use hyperband early stopping, check the details from wandb documentation
   

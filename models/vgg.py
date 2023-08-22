@@ -34,11 +34,11 @@ class VGG(nn.Module):
             if isinstance(layer, FrFTPool) or isinstance(layer, DFrFTPool):
                 order_1, order_2 = layer.order1.item(), layer.order2.item()
 
-                # TODO: add modulo with tuna
+                # TODO: We can add module type operation to put values in desired ranges
                 if isinstance(layer, FrFTPool):
-                    d[f"pool_{pool_count}"] = (order_1 % 4, order_2 % 4)
+                    d[f"pool_{pool_count}"] = (order_1, order_2)
                 elif isinstance(layer, DFrFTPool):
-                    d[f"pool_{pool_count}"] = (order_1 % 4, order_2 % 4)
+                    d[f"pool_{pool_count}"] = (order_1, order_2)
 
             pool_count += 1
 

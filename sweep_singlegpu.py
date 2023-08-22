@@ -92,6 +92,7 @@ def run_sweep(config: dict = None):
         patience=config.patience,
         wandb_flag=True,
         sweep_id=sweep_id,
+        early_stop_verbose=config.early_stop_verbose,
     )
 
 

@@ -30,6 +30,7 @@ from utils.trainer_utils import (
 # TODO: use inheritance for multigpu trainer
 # TODO: YAML file dan config loadlayınca parametreleri resolve edemiyor pylance, tunaya sor
 # TODO: sweep file içinde runları kaydet
+# TODO: early stopping hallet
 
 
 class Trainer:
@@ -61,37 +62,30 @@ class Trainer:
         patience: int,
         wandb_flag: bool = False,
         sweep_id: str = None,
+        early_stop_verbose: bool = False,
     ):
-        best_test_acc = 0.0
-        best_model = None
-        patience_ct = 0
+        early_stopping = EarlyStopping(patience=patience, verbose=early_stop_verbose)
 
         for epoch in trange(max_epochs):
             self.model.train()
             e_loss = self._run_epoch(data_key="train")
             test_acc = self.test(data_key="test")
 
-            if test_acc > best_test_acc:
-                patience_ct = 0
-                best_test_acc = test_acc
-                best_model = copy.deepcopy(self.model)
-            else:
-                patience_ct += 1
-
-            if patience_ct == patience:
-                print(f"Early stopping at epoch {epoch}")
-                break
-
             if wandb_flag:
-                log_train_parameters(
+                self.epoch_wandb_log(
                     loss=e_loss,
                     lr=self.optimizer.param_groups[0]["lr"],
                     fracs_d=self.model.get_frac_orders(),
                     epoch=epoch,
+                    test_acc=test_acc,
                 )
-                log_test_parameters(test_acc=test_acc, epoch=epoch)
 
-        self.foo(best_test_acc, best_model, sweep_id)
+            best_test_acc, best_model = early_stopping(test_acc, self.model, epoch)
+            if early_stopping.early_stop:
+                break
+
+        self.pipeline_wandb_log(best_test_acc, best_model, sweep_id)
+        self.sanity_check(best_model, best_test_acc)
 
     def _run_epoch(self, data_key: str = "train"):
         e_loss = 0
@@ -132,7 +126,7 @@ class Trainer:
         correct_b = (predicted == target).sum().item()
         return correct_b, total_b
 
-    def _sanity_check_for_test_acc(self, best_model, best_test_acc):
+    def sanity_check(self, best_model, best_test_acc):
         """
         A sanity check for the test accuracy of the best model, use it if you want to be sure
         """
@@ -148,18 +142,44 @@ class Trainer:
 
         SWEEP_ID_FOLDER = MODELS_DIR.joinpath(sweep_id)
         SWEEP_ID_FOLDER.mkdir(parents=True, exist_ok=True)
+        FILE_NAME = f"{self.model.model_name}-{test_acc}-{wandb.run.id}-ckpt.pth"
 
-        ckpt_path = Path.joinpath(
-            MODELS_DIR,
-            SWEEP_ID_FOLDER,
-            f"{self.model.model_name}-{test_acc}-{wandb.run.id}-ckpt.pth",
-        )
-
+        ckpt_path = Path.joinpath(MODELS_DIR, SWEEP_ID_FOLDER, FILE_NAME)
         torch.save(self.checkpoint, ckpt_path)
 
-    def foo(self, best_test_acc, best_model: VGG, sweep_id: str):
+    def epoch_wandb_log(self, loss, lr, fracs_d, epoch, test_acc):
+        log_train_parameters(loss=loss, lr=lr, fracs_d=fracs_d, epoch=epoch)
+        log_test_parameters(test_acc=test_acc, epoch=epoch)
+
+    def pipeline_wandb_log(self, best_test_acc, best_model: VGG, sweep_id: str):
         self.checkpoint["test_acc"] = best_test_acc
         self.checkpoint["model"] = best_model
         self.checkpoint["model_state_dict"] = best_model.state_dict()
         self.save_checkpoint(best_test_acc, sweep_id)
         wandb.log(data={"test/best_test_acc": best_test_acc})
+
+
+class EarlyStopping:
+    def __init__(self, patience: int, verbose: bool = False):
+        self.patience = patience
+        self.verbose = verbose
+
+        self.counter = 0
+        self.best_test_acc = 0
+        self.best_model = None
+        self.early_stop = False
+
+    def __call__(self, test_acc: float, model: VGG, epoch: int):
+        if test_acc > self.best_test_acc:
+            self.counter = 0
+            self.best_test_acc = test_acc
+            self.best_model = copy.deepcopy(model)
+        else:
+            self.counter += 1
+
+        if self.counter >= self.patience:
+            self.early_stop = True
+            if self.verbose:
+                print(f"Early stopping at epoch {epoch}")
+
+        return self.best_test_acc, self.best_model
