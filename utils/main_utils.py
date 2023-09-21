@@ -6,9 +6,10 @@ from configurations.configs import OptimizerType, SchedulerType
 
 from torch.optim.lr_scheduler import CosineAnnealingLR
 import torchvision.transforms as transforms
+import torch
 
 
-def get_optimizer(config: OptimizerConfig, model):
+def get_optimizer(config: OptimizerConfig, model: torch.nn.Module):
     if config.optimizer_type is OptimizerType.SGD:
         return SGD(
             model.parameters(),

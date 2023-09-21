@@ -33,19 +33,19 @@ def main(
     wandb_flag: bool,
 ):
     ddp_setup(rank, world_size)
-    model_name = "VGG_11_FRFT"
+    model_name = "VGG_16_FRFT"
     n_class = 10
 
     dh_config = DataHandlerConfig(
-        batch_size=64,
+        batch_size=128,
         multi_gpu=multi_gpu,
-        train_slice=100,
-        test_slice=10,
+        train_slice=1,
+        test_slice=1,
         transform=get_basic_transform(),
     )
 
     optimizer_config = OptimizerConfig(
-        optimizer_type=OptimizerType.SGD, lr=0.5, wd=5e-4, momentum=0.9
+        optimizer_type=OptimizerType.SGD, lr=0.1, wd=5e-4, momentum=0.9
     )
 
     scheduler_config = SchedulerConfig(
@@ -76,7 +76,7 @@ def main(
 
 
 if __name__ == "__main__":
-    max_epochs = 5
+    max_epochs = 200
     multi_gpu = True
     wandb_flag = False
 

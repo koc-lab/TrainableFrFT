@@ -64,6 +64,7 @@ def dump_model_variants_dict(
     filename = f"model_dicts/{model_name}_variants.pkl"
     with open(filename, "wb") as f:
         pickle.dump(model_variants_dict, f)
+        
 
 
 def get_model_variants_dict(model_name: str) -> dict[str, list]:

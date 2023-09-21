@@ -1,6 +1,6 @@
 # %%
-from torch_frft.dfrft_module import dfrft
-from torch_frft.frft_module import frft
+
+from torch.fft import fftshift, ifftshift
 
 import torch
 import torch.nn as nn
@@ -24,18 +24,22 @@ class FFTPool(nn.Module):
 
     def forward(self, x):
         #
-        out = torch.fft.fft2(x, norm="ortho")
+        out = fftshift(fftshift(torch.fft.fft2(x, norm="ortho"),dim=-1),dim=-2)
 
         *_, H, W = out.size()
 
-        st_H = H // 4
-        end_H = H - st_H
+        st_H = H // 4+1
+        end_H = H - st_H+1
 
-        st_W = W // 4
-        end_W = W - st_W
-
+        st_W = W // 4+1
+        end_W = W - st_W+1
+        
         out = out[..., st_H:end_H, st_W:end_W]
-        out = torch.fft.ifft2(out, norm="ortho")
+        
+        
+        # If you would like to invert
+        #out = ifftshift(ifftshift(out,dim=-1),dim=-2)
+        #out = torch.fft.ifft2(out, norm="ortho")
 
         return torch.abs(out)
 
@@ -54,21 +58,25 @@ class DFrFTPool(nn.Module):
         #
         out = dfrft(x, self.order1, dim=-1)
         out = dfrft(out, self.order2, dim=-2)
-
+        
+        out= fftshift(fftshift(out,dim=-1),dim=-2)
         *_, H, W = out.size()
 
-        st_H = H // 4
-        end_H = H - st_H
+        st_H = H // 4+1
+        end_H = H - st_H+1
 
-        st_W = W // 4
-        end_W = W - st_W
+        st_W = W // 4+1
+        end_W = W - st_W+1
 
         out = out[..., st_H:end_H, st_W:end_W]
 
-        #
-        out = dfrft(out, -self.order1, dim=-1)
-        out = dfrft(out, -self.order2, dim=-2)
-
+        # If you would like to invert
+        
+        #out= ifftshift(ifftshift(out,dim=-1),dim=-2)
+        #out = dfrft(out, -self.order1, dim=-1)
+        #out = dfrft(out, -self.order2, dim=-2)
+        
+       
         return torch.abs(out)
 
     def __repr__(self):
@@ -86,10 +94,15 @@ class FrFTPool(nn.Module):
         self.order2 = nn.Parameter(torch.tensor(order, dtype=torch.float32))
 
     def forward(self, x):
-        #
+        
+        x_temp= torch.zeros(x.size(0),x.size(1),x.size(2)+1,x.size(3)+1, device="cuda")
+        x_temp[:,:,1:,1:]=x
+        
+        x=x_temp
+
         out = frft(x, self.order1, dim=-1)
         out = frft(out, self.order2, dim=-2)
-
+        out= fftshift(fftshift(out,dim=-1),dim=-2)
         *_, H, W = out.size()
 
         st_H = H // 4
@@ -101,8 +114,10 @@ class FrFTPool(nn.Module):
         out = out[..., st_H:end_H, st_W:end_W]
 
         #
+        out= ifftshift(ifftshift(out,dim=-1),dim=-2)
         out = frft(out, -self.order1, dim=-1)
         out = frft(out, -self.order2, dim=-2)
+        out = out[..., :-1, :-1]
 
         return torch.abs(out)
 

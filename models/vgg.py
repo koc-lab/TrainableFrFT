@@ -17,10 +17,11 @@ class VGG(nn.Module):
         self.n_class = n_class
 
         self.vgg_block = VGGBlock(VGG_LAYER_DICT[model_name])
-        self.classifier = nn.Linear(512, n_class)
+        self.classifier = nn.Linear(512, n_class)  
 
     def forward(self, x):
-        out = self.vgg_block(x)
+        
+        out = self.vgg_block(x)  
         out = out.view(out.size(0), -1)
         out = self.classifier(out)
 
@@ -87,6 +88,7 @@ class VGGBlock(nn.Module):
                 )
 
         layers.append(nn.AvgPool2d(kernel_size=1, stride=1))
+       
 
         return nn.Sequential(*layers)
 

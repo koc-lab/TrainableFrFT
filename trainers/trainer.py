@@ -10,34 +10,14 @@ import wandb
 
 from utils.trainer_utils import (
     to_device,
-    log_train_parameters,
-    log_test_parameters,
 )
-
-
-# TODO: early stopping feature while training
-# answer: this is done with sweep hopefully
-# TODO: save the best model based on test accuracy
-# answer: done in trainer pipeline function
-# TODO: log the necessary artifacts, only when test acc increased
-# TODO: check whether test acc in wandb table corresponds to last value or max of test/test_accuracy logs
-# answer: it corresponds to last acc
-# TODO: wandb count parametresi nasıl çalışıyor anla
-# TODO: emirhanla neleri sweep edeceğimize karar verelim
-# TODO: multiple gpu ile çalışırken size problemi çıkıyor, bunu çöz
-# TODO: should I add optimizer state dict also to checkpoint?
-
-# TODO: use inheritance for multigpu trainer
-# TODO: YAML file dan config loadlayınca parametreleri resolve edemiyor pylance, tunaya sor
-# TODO: sweep file içinde runları kaydet
-# TODO: early stopping hallet
 
 
 class Trainer:
     def __init__(
         self,
         # TODO: add other possible model names here as typing
-        model: VGG,
+        model,
         loaders: dict[str, DataLoader],
         criterion,
         optimizer: torch.optim.Optimizer,
@@ -45,7 +25,7 @@ class Trainer:
         # possible configs parameters
         gpu_id: int,
     ):
-        self.model = model.to(gpu_id)
+        # self.model = model.to(gpu_id)
 
         self.loaders = loaders
         self.criterion = criterion
@@ -53,6 +33,7 @@ class Trainer:
         self.scheduler = scheduler
 
         self.gpu_id = gpu_id
+        self.model = model.to(self.gpu_id)
 
         self.checkpoint = {}
 
@@ -75,6 +56,7 @@ class Trainer:
                 self.epoch_wandb_log(
                     loss=e_loss,
                     lr=self.optimizer.param_groups[0]["lr"],
+                    # TODO: get_frac_orders only works for VGG
                     fracs_d=self.model.get_frac_orders(),
                     epoch=epoch,
                     test_acc=test_acc,
@@ -148,10 +130,19 @@ class Trainer:
         torch.save(self.checkpoint, ckpt_path)
 
     def epoch_wandb_log(self, loss, lr, fracs_d, epoch, test_acc):
-        log_train_parameters(loss=loss, lr=lr, fracs_d=fracs_d, epoch=epoch)
-        log_test_parameters(test_acc=test_acc, epoch=epoch)
+        wandb.log(data={"train/loss": loss}, step=epoch)
+        wandb.log(data={"train/lr": lr}, step=epoch)
+        wandb.log(data={"test/test_accuracy": test_acc}, step=epoch)
+        try:
+            for k, v in fracs_d.items():
+                order1, order2 = v
+                wandb.log(data={f"train/{k}_order1": order1}, step=epoch)
+                wandb.log(data={f"train/{k}_order2": order2}, step=epoch)
 
-    def pipeline_wandb_log(self, best_test_acc, best_model: VGG, sweep_id: str):
+        except AttributeError:
+            print("Model does not have frac_order parameter")
+
+    def pipeline_wandb_log(self, best_test_acc, best_model, sweep_id: str):
         self.checkpoint["test_acc"] = best_test_acc
         self.checkpoint["model"] = best_model
         self.checkpoint["model_state_dict"] = best_model.state_dict()
@@ -169,7 +160,7 @@ class EarlyStopping:
         self.best_model = None
         self.early_stop = False
 
-    def __call__(self, test_acc: float, model: VGG, epoch: int):
+    def __call__(self, test_acc: float, model, epoch: int):
         if test_acc > self.best_test_acc:
             self.counter = 0
             self.best_test_acc = test_acc

@@ -21,24 +21,6 @@ def to_device(data, target, device):
     return data.to(device), target.to(device)
 
 
-def log_train_parameters(loss: float, lr: float, fracs_d: dict, epoch: int):
-    wandb.log(data={"train/loss": loss}, step=epoch)
-    wandb.log(data={"train/lr": lr}, step=epoch)
-
-    try:
-        for k, v in fracs_d.items():
-            order1, order2 = v
-            wandb.log(data={f"train/{k}_order1": order1}, step=epoch)
-            wandb.log(data={f"train/{k}_order2": order2}, step=epoch)
-
-    except AttributeError:
-        print("Model does not have frac_order parameter")
-
-
-def log_test_parameters(test_acc: float, epoch: int):
-    wandb.log(data={"test/test_accuracy": test_acc}, step=epoch)
-
-
 def log_model_artifact(test_acc: str, ckpt_file: Path):
     artifact_name = f"{wandb.run.id}_{ckpt_file.stem}_{test_acc}"
     artifact = wandb.Artifact(name=artifact_name, type="Model")

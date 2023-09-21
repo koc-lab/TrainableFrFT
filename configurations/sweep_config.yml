@@ -5,36 +5,40 @@ metric:
   goal: maximize
 parameters:
   patience:
-    value: 20
-  max_epochs:
-    value: 100
-  gpu_id:
-    value: 1
-  model_name:
-    distribution: categorical
-    values: ["VGG_16","VGG_16_FRFT","VGG_16_DFRFT","VGG_16_FFT"]
-  n_class:
     value: 10
+  max_epochs:
+    value: 50
+  gpu_id:
+    value: 2
+  model_name:
+    value: "ResNet50_DFRFT"
+  n_class:
+    value: 200
   dataset_name:
-    value: CIFAR-10
+    value: "CUB2011"
   # Data Handler CONFIG
+  batch_size:
+    values: [64,32]
+ 
   multi_gpu:
     value: False
-  batch_size:
-    value: 128
-  train_slice:
-    value: 1000
-  test_slice:
-    value: 100
   # Optimizer CONFIG
   lr:
-    value: 0.1
+    values: [0.001,0.005]
+   
   wd:
-    value: 0.0005
+    values: [0.0001] #, 0.05]
   momentum:
     value: 0.9
   early_stop_verbose:
     value: True
+  train_slice:
+    value: 1
+  test_slice: 
+     value: 1
+  n_runs:
+    value: 30
+  
 
 # TODO: You can also use hyperband early stopping, check the details from wandb documentation
   

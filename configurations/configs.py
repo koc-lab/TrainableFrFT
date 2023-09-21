@@ -13,8 +13,13 @@ class DataHandlerConfig:
     test_slice: int
     train_transform: torchvision.transforms
     test_transform: torchvision.transforms
+    dataset:str
 
+@dataclass
+class DatasetName:
+    dataset_name:str
 
+    
 class OptimizerType(Enum):
     # TODO: add other types in future
     SGD = auto()
@@ -32,6 +37,7 @@ class OptimizerConfig:
 class SchedulerType(Enum):
     CosineAnnealingLR = auto()
     # TODO: add other types in future
+    
 
 
 @dataclass
@@ -60,3 +66,7 @@ class PoolType(Enum):
     FrFTPool = auto()
     DFrFTPool = auto()
     FFTPool = auto()
+ 
+
+
+

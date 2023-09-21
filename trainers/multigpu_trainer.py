@@ -10,12 +10,10 @@ from models.vgg import VGG
 
 from torch.nn.parallel import DistributedDataParallel as DDP
 import os
-from utils.trainer_utils import (
-    to_device,
-    log_train_parameters,
-    log_test_parameters,
-    print_gpu_info,
-)
+from utils.trainer_utils import ( to_device,
+                                  log_train_parameters,
+                                  log_test_parameters,
+                                  print_gpu_info, )
 
 SAVE_DIR = Path("./trained_models/")
 
