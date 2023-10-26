@@ -9,7 +9,7 @@ packages = [{ include = "frft_demo" }]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"
-torch-frft = "^0.5.4"
+torch-frft = "^0.6.1"
 wandb = "^0.15.7"
 ipykernel = "^6.25.0"
 matplotlib = "^3.7.2"
