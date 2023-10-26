@@ -2,7 +2,11 @@
 name = "frft-demo"
 version = "0.1.0"
 description = ""
-authors = ["Arda Can Aras <ardaaras99@gmail.com>"]
+authors = [
+    "Emirhan Koç <bu.emirhan96@gmail.com>",
+    "Tuna Alikaşifoğlu <tunakasif@gmail.com>",
+    "Arda Can Aras <ardaaras99@gmail.com>",
+]
 readme = "README.md"
 packages = [{ include = "frft_demo" }]
 
