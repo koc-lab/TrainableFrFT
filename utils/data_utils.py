@@ -5,7 +5,7 @@ from torch.utils.data.distributed import DistributedSampler
 
 from configurations.configs import DataHandlerConfig
 
-from torchvision.datasets import CIFAR10
+from torchvision.datasets import CIFAR10,CIFAR100
 from torch.utils.data import DataLoader, Subset, Dataset, random_split
 
 from torchvision.datasets.folder import default_loader
@@ -66,12 +66,20 @@ class CustomDataHandler:
                 root=root, train=True, transform=self.c.train_transform, download=True
             )
             test_dataset = CIFAR10(root=root, train=False, transform=self.c.test_transform)
+        
+        elif dataset_name=="CIFAR-100":
+            
+            root="./data"
+            train_dataset = CIFAR100(
+                root=root, train=True, transform=self.c.train_transform, download=True
+            )
+            test_dataset = CIFAR100(root=root, train=False, transform=self.c.test_transform)
 
         elif dataset_name=="CUB2011":
             
             root="./data/cub2011_data"
             train_dataset = Cub2011(root=root, train=True, download=True, transform=self.c.train_transform)
-            test_dataset=Cub2011(root=root, train=False, download=True, transform=self.c.test_transform)
+            test_dataset  = Cub2011(root=root, train=False, download=True, transform=self.c.test_transform)
 
         sub_train_dataset = Subset(
                 train_dataset, indices=range(0, len(train_dataset), self.c.train_slice)
@@ -89,20 +97,36 @@ def get_basic_transform(dataset_name):
     # TODO: only for cifar10 now, make it generic to all datasets
     
     if dataset_name=="CIFAR-10":
+           
             d_mean = [0.49139968, 0.48215841, 0.44653091]
             d_std = [0.24703223, 0.24348513, 0.26158784]
             normalize = transforms.Normalize(d_mean, d_std)
 
             transform_train = transforms.Compose(
-                [
-                    transforms.RandomCrop(32, padding=4),
+                [   transforms.ToTensor(),normalize,
+                    transforms.Resize((224, 224)),
                     transforms.RandomHorizontalFlip(),
-                    transforms.ToTensor(),
-                    normalize,
+
                 ]
             )
 
-            transform_test = transforms.Compose([transforms.ToTensor(), normalize])
+            transform_test = transforms.Compose([transforms.Resize((224, 224)),transforms.ToTensor(), normalize])
+    elif dataset_name=="CIFAR-100":
+          
+            d_mean = [0.5071, 0.4867, 0.4408]
+            d_std = [0.2675, 0.2565, 0.2761]
+            normalize = transforms.Normalize(d_mean, d_std)
+
+            transform_train = transforms.Compose(
+                [   transforms.ToTensor(),normalize,
+                    transforms.Resize((224, 224)),
+                    transforms.RandomHorizontalFlip(),
+                    
+                    
+                ]
+            )
+
+            transform_test = transforms.Compose([transforms.Resize((224, 224)),transforms.ToTensor(), normalize])    
    
     elif dataset_name=="CUB2011":
             

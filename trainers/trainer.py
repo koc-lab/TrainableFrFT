@@ -56,7 +56,7 @@ class Trainer:
                 self.epoch_wandb_log(
                     loss=e_loss,
                     lr=self.optimizer.param_groups[0]["lr"],
-                    # TODO: get_frac_orders only works for VGG
+                    
                     fracs_d=self.model.get_frac_orders(),
                     epoch=epoch,
                     test_acc=test_acc,

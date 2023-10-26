@@ -36,6 +36,7 @@ class OptimizerConfig:
 
 class SchedulerType(Enum):
     CosineAnnealingLR = auto()
+    StepLR = auto()
     # TODO: add other types in future
     
 

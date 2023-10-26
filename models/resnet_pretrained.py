@@ -32,7 +32,7 @@ class ResNet(nn.Module):
             self.base_model.fc = nn.Linear(512*expansion*4*4, n_class)
         else: 
              self.base_model.avgpool=nn.AdaptiveAvgPool2d((1,1))
-             self.base_model.fc = nn.Linear(512*expansion, n_class)
+             self.base_model.fc = nn.Linear(512*expansion*1*1, n_class)
                 
          #this part is crucial!!!!!!!!!!!!
         self.base_model.fc.apply(weight_init_kaiming)

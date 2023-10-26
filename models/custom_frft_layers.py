@@ -95,8 +95,8 @@ class FrFTPool(nn.Module):
 
     def forward(self, x):
         
-        x_temp= torch.zeros(x.size(0),x.size(1),x.size(2)+1,x.size(3)+1, device="cuda")
-        x_temp[:,:,1:,1:]=x
+        x_temp= torch.zeros(x.size(0),x.size(1),x.size(2)+1,x.size(3)+1, device="cuda:3")
+        x_temp[:,:,0:-1,0:-1]=x
         
         x=x_temp
 
@@ -114,10 +114,10 @@ class FrFTPool(nn.Module):
         out = out[..., st_H:end_H, st_W:end_W]
 
         #
-        out= ifftshift(ifftshift(out,dim=-1),dim=-2)
-        out = frft(out, -self.order1, dim=-1)
-        out = frft(out, -self.order2, dim=-2)
-        out = out[..., :-1, :-1]
+        #out= ifftshift(ifftshift(out,dim=-1),dim=-2)
+        #out = frft(out, -self.order1, dim=-1)
+        #out = frft(out, -self.order2, dim=-2)
+        #out = out[..., :-1, :-1]
 
         return torch.abs(out)
 
@@ -134,5 +134,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# %%

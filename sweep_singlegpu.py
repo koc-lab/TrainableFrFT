@@ -13,6 +13,10 @@ import wandb
 import yaml
 from utils.utils import set_seeds
 
+import os
+
+os.environ["WANDB__SERVICE_WAIT"] = "300"
+
 set_seeds()
 
 
@@ -66,17 +70,16 @@ def run_sweep(config: dict = None):
     )
    
     scheduler_config = SchedulerConfig(
-        scheduler_type=SchedulerType.CosineAnnealingLR,
+        scheduler_type= SchedulerType.CosineAnnealingLR,
         max_epochs=config.max_epochs,
     )
 
 
-   
     
     custom_dataclass = CustomDataHandler(config=dh_config)
     loaders = custom_dataclass.loaders
 
-    #model = VGG(model_name=config.model_name, n_class=config.n_class)
+    #model = VGG16(model_name=config.model_name, n_class=config.n_class)
     model= resnet_models(model_name=config.model_name,n_class=config.n_class)
     criterion = torch.nn.CrossEntropyLoss()
 
@@ -108,5 +111,7 @@ def run_sweep(config: dict = None):
 
 n_runs = sweep_config["parameters"]["n_runs"]["value"]
 
-sweep_id = wandb.sweep(sweep_config, project="frft-demo")
+
+
+sweep_id = wandb.sweep(sweep_config, project='frft-demo')
 wandb.agent(sweep_id, function=run_sweep, count=n_runs)

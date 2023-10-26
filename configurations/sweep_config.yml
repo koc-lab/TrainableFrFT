@@ -5,27 +5,25 @@ metric:
   goal: maximize
 parameters:
   patience:
-    value: 10
+    value: 20
   max_epochs:
-    value: 50
+    values: [50]
   gpu_id:
-    value: 2
+    value: 3
   model_name:
-    value: "ResNet50_DFRFT"
+    value: "ResNet34_FFT"   # "ResNet152_DFRFT" , "ResNet152_FRFT"  ,"ResNet152"    
   n_class:
-    value: 200
+    value: 10
   dataset_name:
-    value: "CUB2011"
+    value: "CIFAR-10"   
   # Data Handler CONFIG
   batch_size:
-    values: [64,32]
- 
+    values: [64]
   multi_gpu:
     value: False
   # Optimizer CONFIG
   lr:
-    values: [0.001,0.005]
-   
+    values: [0.001]
   wd:
     values: [0.0001] #, 0.05]
   momentum:
@@ -38,7 +36,19 @@ parameters:
      value: 1
   n_runs:
     value: 30
+
   
 
 # TODO: You can also use hyperband early stopping, check the details from wandb documentation
   
+
+
+#Use this setting for base models:
+#Same scheduler and optimizer for all
+
+# It is more fair to compare FFT/FRFT based method and Time domain method using pretrained models with a slight difference in epoch size
+#TIME DOMAIN: BS=64,EPOCH:30-35, LR:0.001
+#FFT/FRFT DOMAIN: BS=64, EPOCH:50, LR:0.001
+
+
+
