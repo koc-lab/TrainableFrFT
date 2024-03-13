@@ -1,6 +1,20 @@
 # Trainable Fractional Fourier Transform
 
-In this repository, we present the source code for the experiments of our _Trainable Fractional Fourier Transform_ paper is accepted to _IEEE Signal Processing Letters_. The installable package [`torch-frft`](https://github.com/tunakasif/torch-frft) is maintained at its own [GitHub page](https://github.com/tunakasif/torch-frft). The package is available on both [PyPI](https://pypi.org/project/torch-frft/) and [Conda](https://anaconda.org/conda-forge/torch-frft). Installation instructions are provided below.
+In this repository, we present the source code for the experiments of our _Trainable Fractional Fourier Transform_ paper is accepted to _IEEE Signal Processing Letters_. The installable package [`torch-frft`](https://github.com/tunakasif/torch-frft) is maintained at its own [GitHub page](https://github.com/tunakasif/torch-frft). The package is available on both [PyPI](https://pypi.org/project/torch-frft/) and [Conda](https://anaconda.org/conda-forge/torch-frft). Installation instructions are provided below. Please use the following BibTeX entry to cite our work:
+
+```bibtex
+@article{trainable-frft-2024,
+  author   = {Koc, Emirhan and Alikasifoglu, Tuna and Aras, Arda Can and Koc, Aykut},
+  journal  = {IEEE Signal Processing Letters},
+  title    = {Trainable Fractional Fourier Transform},
+  year     = {2024},
+  volume   = {},
+  number   = {},
+  pages    = {1-5},
+  keywords = {Vectors;Convolution;Training;Task analysis;Computational modeling;Time series analysis;Feature extraction;Machine learning;neural networks;FT;fractional FT;deep learning},
+  doi      = {10.1109/LSP.2024.3372779}
+}
+```
 
 ## Installation of `torch-frft`
 
