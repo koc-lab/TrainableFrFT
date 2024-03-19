@@ -4,13 +4,13 @@ In this repository, we present the source code for the experiments of our _Train
 
 ```bibtex
 @article{trainable-frft-2024,
-  author   = {Koc, Emirhan and Alikasifoglu, Tuna and Aras, Arda Can and Koc, Aykut},
+  author   = {Koç, Emirhan and Alikaşifoğlu, Tuna and Aras, Arda Can and Koç, Aykut},
   journal  = {IEEE Signal Processing Letters},
   title    = {Trainable Fractional Fourier Transform},
   year     = {2024},
-  volume   = {},
+  volume   = {31},
   number   = {},
-  pages    = {1-5},
+  pages    = {751-755},
   keywords = {Vectors;Convolution;Training;Task analysis;Computational modeling;Time series analysis;Feature extraction;Machine learning;neural networks;FT;fractional FT;deep learning},
   doi      = {10.1109/LSP.2024.3372779}
 }
