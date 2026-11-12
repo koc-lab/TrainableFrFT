@@ -18,16 +18,10 @@ In this repository, we present the source code for the experiments of our [Train
 
 ## Installation of `torch-frft`
 
-You can install the package directly from [PyPI](https://pypi.org/project/torch-frft/) using `pip` or `poetry` as follows:
+You can install the package directly from [PyPI](https://pypi.org/project/torch-frft/):
 
 ```sh
 pip install torch-frft
-```
-
-or
-
-```sh
-poetry add torch-frft
 ```
 
 or directly from [Conda](https://anaconda.org/conda-forge/torch-frft):
